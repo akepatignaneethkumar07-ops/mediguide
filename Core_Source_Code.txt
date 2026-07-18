@@ -1,0 +1,1971 @@
+# MediGuide AI Core Source Code
+This file contains the key source code files of the application so you can open and read them directly.
+
+==========================================================
+FILE: package.json
+==========================================================
+```tsx
+{
+  "name": "miaoda-react-admin",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "echo 'Do not use this command, only use lint to check'",
+    "build": "echo 'Do not use this command, only use lint to check'",
+    "lint": "tsgo -p tsconfig.check.json; npx biome lint; .rules/check.sh;npx tailwindcss -i ./src/index.css -o /dev/null 2>&1 | grep -E '^(CssSyntaxError|Error):.*' || true;.rules/testBuild.sh"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "@radix-ui/react-accordion": "^1.2.12",
+    "@radix-ui/react-alert-dialog": "^1.1.15",
+    "@radix-ui/react-aspect-ratio": "^1.1.7",
+    "@radix-ui/react-avatar": "^1.1.10",
+    "@radix-ui/react-checkbox": "^1.3.3",
+    "@radix-ui/react-collapsible": "^1.1.12",
+    "@radix-ui/react-context-menu": "^2.2.16",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-dropdown-menu": "^2.1.16",
+    "@radix-ui/react-hover-card": "^1.1.15",
+    "@radix-ui/react-icons": "^1.3.2",
+    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-menubar": "^1.1.16",
+    "@radix-ui/react-navigation-menu": "^1.2.14",
+    "@radix-ui/react-popover": "^1.1.15",
+    "@radix-ui/react-progress": "^1.1.7",
+    "@radix-ui/react-radio-group": "^1.3.8",
+    "@radix-ui/react-scroll-area": "^1.2.10",
+    "@radix-ui/react-select": "^2.2.6",
+    "@radix-ui/react-separator": "^1.1.7",
+    "@radix-ui/react-slider": "^1.3.6",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@radix-ui/react-switch": "^1.2.6",
+    "@radix-ui/react-tabs": "^1.1.13",
+    "@radix-ui/react-toast": "^1.2.15",
+    "@radix-ui/react-toggle": "^1.1.10",
+    "@radix-ui/react-toggle-group": "^1.1.11",
+    "@radix-ui/react-tooltip": "^1.2.8",
+    "@sentry/react": "^9.47.1",
+    "@supabase/supabase-js": "2.103.1",
+    "axios": "^1.13.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
+    "date-fns": "^3.6.0",
+    "embla-carousel-react": "^8.6.0",
+    "eventsource-parser": "^3.0.6",
+    "input-otp": "^1.4.2",
+    "ky": "^1.13.0",
+    "lucide-react": "^0.576.0",
+    "miaoda-react-devkit": "0.1.1-beta.15",
+    "miaoda-sc-plugin": "1.0.62",
+    "motion": "^12.23.25",
+    "next-themes": "^0.4.6",
+    "pptxgenjs": "^4.0.1",
+    "qrcode": "^1.5.4",
+    "react": "^18.0.0",
+    "react-day-picker": "^9.13.0",
+    "react-dom": "^18.0.0",
+    "react-dropzone": "^14.3.8",
+    "react-helmet-async": "^2.0.5",
+    "react-hook-form": "^7.66.0",
+    "react-resizable-panels": "^2.1.8",
+    "react-router": "^7.9.5",
+    "react-router-dom": "^7.9.5",
+    "recharts": "2.15.4",
+    "sonner": "^2.0.7",
+    "streamdown": "^1.4.0",
+    "tailwind-merge": "^3.3.1",
+    "tailwindcss-animate": "^1.0.7",
+    "tailwindcss-intersect": "^2.2.0",
+    "vaul": "^1.1.2",
+    "video-react": "^0.16.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.5",
+    "@tailwindcss/container-queries": "^0.1.1",
+    "@types/bmapgl": "^0.0.7",
+    "@types/lodash": "^4.17.24",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "@types/video-react": "^0.15.8",
+    "@typescript/native-preview": "7.0.0-dev.20260514.1",
+    "@vitejs/plugin-react": "^5.1.4",
+    "autoprefixer": "^10.4.27",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.11",
+    "typescript": "~5.9.3",
+    "vite": "npm:rolldown-vite@latest",
+    "vite-plugin-svgr": "^4.5.0"
+  }
+}
+```
+
+==========================================================
+FILE: src/main.tsx
+==========================================================
+```tsx
+import * as Sentry from "@sentry/react";
+import { createRoot } from "react-dom/client";
+import App from "./App.tsx";
+import { AppWrapper } from "./components/common/PageMeta.tsx";
+import "./index.css";
+
+Sentry.init({
+  dsn: import.meta.env['VITE_SENTRY_DSN'] as string | undefined,
+  environment: import.meta.env.MODE,
+});
+
+createRoot(document.getElementById("root")!).render(
+  <Sentry.ErrorBoundary fallback={<p>应用发生错误，请刷新页面重试</p>}>
+    <AppWrapper>
+      <App />
+    </AppWrapper>
+  </Sentry.ErrorBoundary>
+);
+```
+
+==========================================================
+FILE: src/App.tsx
+==========================================================
+```tsx
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import IntersectObserver from '@/components/common/IntersectObserver';
+import { Toaster } from '@/components/ui/sonner';
+import { ThemeProvider } from '@/contexts/ThemeContext';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { AppProvider } from '@/contexts/AppContext';
+import { routes } from './routes';
+import FloatingAIButton from '@/components/FloatingAIButton';
+
+const App: React.FC = () => {
+  return (
+    <ThemeProvider>
+      <AuthProvider>
+        <AppProvider>
+          <Router>
+            <IntersectObserver />
+            <Routes>
+              {routes.map((route, index) => (
+                <Route key={index} path={route.path} element={route.element} />
+              ))}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+            <FloatingAIButton />
+            <Toaster richColors position="top-right" />
+          </Router>
+        </AppProvider>
+      </AuthProvider>
+    </ThemeProvider>
+  );
+};
+
+export default App;
+```
+
+==========================================================
+FILE: src/routes.tsx
+==========================================================
+```tsx
+import React from 'react';
+import type { ReactNode } from 'react';
+import { Navigate } from 'react-router-dom';
+import LandingPage from './pages/LandingPage';
+import AuthPage from './pages/AuthPage';
+import PatientDashboard from './pages/PatientDashboard';
+import AppointmentBooking from './pages/AppointmentBooking';
+import AIChatPage from './pages/AIChatPage';
+import VoiceAssistantPage from './pages/VoiceAssistantPage';
+import DoctorDirectoryPage from './pages/DoctorDirectoryPage';
+import MedicalReportsPage from './pages/MedicalReportsPage';
+import MedicineReminderPage from './pages/MedicineReminderPage';
+import NotificationsPage from './pages/NotificationsPage';
+import ProfilePage from './pages/ProfilePage';
+import SettingsPage from './pages/SettingsPage';
+import StaffDashboard from './pages/StaffDashboard';
+import AdminDashboard from './pages/AdminDashboard';
+import NotFound from './pages/NotFound';
+import EmergencyPage from './pages/EmergencyPage';
+import PillScannerPage from './pages/PillScannerPage';
+import ReportMakerPage from './pages/ReportMakerPage';
+import DietAgentPage from './pages/DietAgentPage';
+import HospitalMapPage from './pages/HospitalMapPage';
+
+// Doctor Portal
+import DoctorLoginPage from './pages/doctor/DoctorLoginPage';
+import DoctorDashboardPage from './pages/doctor/DoctorDashboardPage';
+import DoctorAppointmentsPage from './pages/doctor/DoctorAppointmentsPage';
+import DoctorPatientsPage from './pages/doctor/DoctorPatientsPage';
+
+// Staff Portal pages
+import StaffLoginPage from './pages/staff/StaffLoginPage';
+import StaffPortalPage from './pages/staff/StaffPortalPage';
+
+// Hospital Member Portal
+import HospitalMemberDashboard from './pages/HospitalMemberDashboard';
+
+import { useAuth } from './contexts/AuthContext';
+
+/** Guard: only role=doctor may access; others go to /doctor-login */
+const DoctorGuard: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const { profile, loading } = useAuth();
+  if (loading) return null;
+  if (!profile) return <Navigate to="/doctor-login" replace />;
+  if (profile.role !== 'doctor') return <Navigate to="/doctor-login" replace />;
+  return <>{children}</>;
+};
+
+/** Guard: only role=staff may access; others go to /staff-login */
+const StaffGuard: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const { profile, loading } = useAuth();
+  if (loading) return null;
+  if (!profile) return <Navigate to="/staff-login" replace />;
+  if (profile.role !== 'staff') return <Navigate to="/staff-login" replace />;
+  return <>{children}</>;
+};
+
+/** Guard: only role=hospital_member may access; others go to /login */
+const HospitalMemberGuard: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const { profile, loading } = useAuth();
+  if (loading) return null;
+  if (!profile) return <Navigate to="/login" replace />;
+  if (profile.role !== 'hospital_member') return <Navigate to="/dashboard" replace />;
+  return <>{children}</>;
+};
+
+export interface RouteConfig {
+  name: string;
+  path: string;
+  element: ReactNode;
+  visible?: boolean;
+  public?: boolean;
+}
+
+export const routes: RouteConfig[] = [
+  // Public
+  { name: 'Home',    path: '/',       element: <LandingPage />, public: true },
+  { name: 'Login',   path: '/login',  element: <AuthPage />,    public: true },
+  { name: 'Sign Up', path: '/signup', element: <AuthPage />,    public: true },
+
+  // Doctor Portal
+  { name: 'Doctor Login',           path: '/doctor-login',           element: <DoctorLoginPage />, public: true },
+  { name: 'Doctor Dashboard',       path: '/doctor-dashboard',       element: <DoctorGuard><DoctorDashboardPage /></DoctorGuard> },
+  { name: 'Doctor Appointments',    path: '/doctor-appointments',    element: <DoctorGuard><DoctorAppointmentsPage /></DoctorGuard> },
+  { name: 'Doctor Patients',        path: '/doctor-patients',        element: <DoctorGuard><DoctorPatientsPage /></DoctorGuard> },
+
+  // Staff Portal
+  { name: 'Staff Login',   path: '/staff-login',   element: <StaffLoginPage />, public: true },
+  { name: 'Staff Portal',  path: '/staff-portal',  element: <StaffGuard><StaffPortalPage /></StaffGuard> },
+
+  // Patient Portal
+  { name: 'Dashboard',          path: '/dashboard',     element: <PatientDashboard /> },
+  { name: 'Appointments',       path: '/appointments',  element: <AppointmentBooking /> },
+  { name: 'AI Assistant',       path: '/chat',          element: <AIChatPage /> },
+  { name: 'Voice Assistant',    path: '/voice',         element: <VoiceAssistantPage /> },
+  { name: 'Doctors',            path: '/doctors',       element: <DoctorDirectoryPage /> },
+  { name: 'Hospital Locations', path: '/hospital-map',  element: <HospitalMapPage /> },
+  { name: 'Reports',            path: '/reports',       element: <MedicalReportsPage /> },
+  { name: 'Medicine Reminders', path: '/reminders',     element: <MedicineReminderPage /> },
+  { name: 'Emergency',          path: '/emergency',     element: <EmergencyPage /> },
+  { name: 'Pill Scanner',       path: '/pill-scanner',  element: <PillScannerPage /> },
+  { name: 'Report Maker',       path: '/report-maker',  element: <ReportMakerPage /> },
+  { name: 'Diet & Health Agent',path: '/diet',          element: <DietAgentPage /> },
+  { name: 'Notifications',      path: '/notifications', element: <NotificationsPage /> },
+  { name: 'Profile',            path: '/profile',       element: <ProfilePage /> },
+  { name: 'Settings',           path: '/settings',      element: <SettingsPage /> },
+
+  // Hospital Member Portal
+  { name: 'Hospital Member Dashboard', path: '/hospital-member-dashboard', element: <HospitalMemberGuard><HospitalMemberDashboard /></HospitalMemberGuard> },
+
+  // Staff & Admin (legacy)
+  { name: 'Staff Dashboard', path: '/staff-dashboard', element: <StaffDashboard /> },
+  { name: 'Admin Dashboard', path: '/admin-dashboard', element: <AdminDashboard /> },
+
+  // 404
+  { name: 'Not Found', path: '/404', element: <NotFound />, public: true },
+];
+```
+
+==========================================================
+FILE: src/contexts/AuthContext.tsx
+==========================================================
+```tsx
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { supabase } from '@/db/supabase';
+import type { User } from '@supabase/supabase-js';
+import type { Profile, UserRole } from '@/types/types';
+import { getProfile } from '@/lib/api';
+
+interface AuthContextType {
+  user: User | null;
+  profile: Profile | null;
+  loading: boolean;
+  signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signUp: (email: string, password: string, name: string, role: UserRole) => Promise<{ error: Error | null }>;
+  resetPassword: (email: string) => Promise<{ error: Error | null }>;
+  signOut: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const refreshProfile = async () => {
+    if (!user) { setProfile(null); return; }
+    const data = await getProfile(user.id);
+    setProfile(data);
+  };
+
+  useEffect(() => {
+    supabase.auth.getSession()
+      .then(({ data: { session } }) => {
+        setUser(session?.user ?? null);
+        if (session?.user) getProfile(session.user.id).then(setProfile);
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        getProfile(session.user.id).then(setProfile);
+      } else {
+        setProfile(null);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const signIn = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    return { error: error as Error | null };
+  };
+
+  const signUp = async (email: string, password: string, name: string, role: UserRole) => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { name, role } },
+    });
+    return { error: error as Error | null };
+  };
+
+  const resetPassword = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/login`,
+    });
+    return { error: error as Error | null };
+  };
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setProfile(null);
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, profile, loading, signIn, signUp, resetPassword, signOut, refreshProfile }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) throw new Error('useAuth must be used within an AuthProvider');
+  return context;
+}
+```
+
+==========================================================
+FILE: src/pages/AuthPage.tsx
+==========================================================
+```tsx
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
+import {
+  Eye, EyeOff, Activity, ArrowLeft, AlertCircle,
+  User, Stethoscope, ChevronRight, Droplet,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
+import type { UserRole } from '@/types/types';
+
+type AuthMode = 'pick' | 'login' | 'signup' | 'forgot';
+type PortalRole = 'patient' | 'doctor' | 'hospital_member';
+
+const dashMap: Record<UserRole, string> = {
+  patient: '/dashboard',
+  doctor: '/doctor-dashboard',
+  staff: '/staff-dashboard',
+  hospital_member: '/hospital-member-dashboard',
+  admin: '/admin-dashboard',
+};
+
+const portalMeta: Record<PortalRole, {
+  icon: React.ElementType;
+  title: string;
+  description: string;
+  accentClass: string;
+  loginTitle: string;
+  loginSub: string;
+}> = {
+  patient: {
+    icon: User,
+    title: 'Patient',
+    description: 'Book appointments, chat with AI, manage your health records',
+    accentClass: 'border-primary/20 hover:border-primary/40 hover:bg-primary/5',
+    loginTitle: 'Patient Login',
+    loginSub: 'Access your health dashboard and appointments',
+  },
+  doctor: {
+    icon: Stethoscope,
+    title: 'Doctor',
+    description: 'View your patients, manage OP timings and appointment schedules',
+    accentClass: 'border-border hover:border-muted-foreground/30 hover:bg-muted/40',
+    loginTitle: 'Doctor Login',
+    loginSub: 'Access your Doctor Portal — appointments & patient records',
+  },
+  hospital_member: {
+    icon: Droplet,
+    title: 'Hospital Member',
+    description: 'Manage blood bank inventory, track and update patient and guardian blood groups',
+    accentClass: 'border-destructive/20 hover:border-destructive/40 hover:bg-destructive/5',
+    loginTitle: 'Hospital Member Login',
+    loginSub: 'Access Blood Bank Management Portal',
+  },
+};
+
+const AuthPage: React.FC = () => {
+  const [mode, setMode] = useState<AuthMode>('pick');
+  const [portal, setPortal] = useState<PortalRole>('patient');
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({ email: '', password: '', confirmPassword: '', name: '' });
+  const { signIn, signUp, resetPassword, profile } = useAuth();
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    if (profile) navigate(dashMap[profile.role], { replace: true });
+  }, [profile, navigate]);
+
+  const handlePortalSelect = (p: PortalRole) => {
+    setPortal(p);
+    setMode('login');
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    const { error } = await signIn(form.email, form.password);
+    setLoading(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success('Welcome back!');
+  };
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (form.password !== form.confirmPassword) { toast.error('Passwords do not match.'); return; }
+    if (form.password.length < 6) { toast.error('Password must be at least 6 characters.'); return; }
+    setLoading(true);
+    const { error } = await signUp(form.email, form.password, form.name, portal);
+    setLoading(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success('Account created! Please check your email or sign in.');
+    setMode('pick');
+  };
+
+  const handleForgot = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    const { error } = await resetPassword(form.email);
+    setLoading(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success('Password reset link sent to your email.');
+    setMode('pick');
+  };
+
+  const meta = portalMeta[portal];
+  const PortalIcon = meta.icon;
+
+  return (
+    <div className="min-h-screen flex bg-background">
+      {/* Left panel */}
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-primary">
+        <img
+          src="https://images.unsplash.com/photo-1504813184591-01572f98c85f?w=800&h=900&fit=crop"
+          alt="Healthcare"
+          className="absolute inset-0 w-full h-full object-cover opacity-20"
+        />
+        <div className="relative z-10 flex flex-col justify-between p-12 w-full">
+          <Link to="/" className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+              <Activity className="w-4 h-4 text-white" />
+            </div>
+            <span className="font-semibold text-white text-lg">MediGuide AI</span>
+          </Link>
+          <div>
+            <h2 className="text-3xl font-bold text-white mb-4 text-balance">
+              Your intelligent partner in healthcare
+            </h2>
+            <p className="text-white/70 text-sm leading-relaxed mb-8">
+              Separate, secure portals for patients and doctors — each designed for your unique workflow.
+            </p>
+            <div className="space-y-3">
+              {[
+                { icon: User,        label: 'Patient Portal', desc: 'Book appointments, AI chat, medical records' },
+                { icon: Stethoscope, label: 'Doctor Portal',  desc: 'Patient list, OP timings, appointment management' },
+              ].map(({ icon: Icon, label, desc }) => (
+                <div key={label} className="flex items-center gap-3 bg-white/10 rounded-xl px-4 py-3">
+                  <div className="w-8 h-8 rounded-lg bg-white/15 flex items-center justify-center shrink-0">
+                    <Icon className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-white">{label}</p>
+                    <p className="text-xs text-white/60">{desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Right — Form */}
+      <div className="flex-1 flex items-center justify-center p-6 overflow-y-auto">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={mode}
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="w-full max-w-md"
+          >
+            <Link to="/" className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors">
+              <ArrowLeft className="w-4 h-4" /> Back to Home
+            </Link>
+
+            {/* ── PICK PORTAL ── */}
+            {mode === 'pick' && (
+              <div>
+                <div className="mb-8">
+                  <h1 className="text-2xl font-bold mb-1">Welcome to MediGuide AI</h1>
+                  <p className="text-sm text-muted-foreground">Choose your portal to get started</p>
+                </div>
+
+                <div className="space-y-3">
+                  {(['patient', 'doctor', 'hospital_member'] as PortalRole[]).map(p => {
+                    const m = portalMeta[p];
+                    const Icon = m.icon;
+                    return (
+                      <button
+                        key={p}
+                        onClick={() => handlePortalSelect(p)}
+                        className={cn(
+                          'w-full flex items-center gap-4 p-5 rounded-2xl border text-left transition-all group',
+                          m.accentClass
+                        )}
+                      >
+                        <div className={cn(
+                          'w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-colors',
+                          p === 'patient' ? 'bg-primary/10 text-primary' : (p === 'hospital_member' ? 'bg-destructive/10 text-destructive' : 'bg-muted text-foreground')
+                        )}>
+                          <Icon className="w-5 h-5" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-sm">{m.title}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{m.description}</p>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 transition-transform shrink-0" />
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-8 pt-6 border-t border-border text-center flex flex-col gap-3">
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-center" 
+                    onClick={() => { setPortal('patient'); setMode('pick'); }}
+                  >
+                    Already have an account? Sign in
+                  </Button>
+                  <Button 
+                    variant="default" 
+                    className="w-full justify-center" 
+                    onClick={() => { setPortal('patient'); setMode('signup'); }}
+                  >
+                    New here? Create a free account
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* ── LOGIN ── */}
+            {mode === 'login' && (
+              <div>
+                <button
+                  onClick={() => setMode('pick')}
+                  className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground mb-6 transition-colors"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5" /> All portals
+                </button>
+
+                {/* Portal badge */}
+                <div className={cn(
+                  'inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-medium mb-5',
+                  portal === 'patient'
+                    ? 'border-primary/20 bg-primary/10 text-primary'
+                    : 'border-border bg-muted text-foreground'
+                )}>
+                  <PortalIcon className="w-3 h-3" />
+                  {meta.title} Portal
+                </div>
+
+                <div className="mb-7">
+                  <h1 className="text-2xl font-bold mb-1">{meta.loginTitle}</h1>
+                  <p className="text-sm text-muted-foreground">{meta.loginSub}</p>
+                </div>
+
+                {portal === 'doctor' && (
+                  <div className="flex items-start gap-3 px-4 py-3 rounded-xl border border-border bg-muted/40 mb-5">
+                    <Stethoscope className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      This portal is for{' '}
+                      <span className="font-medium text-foreground">verified doctors only</span>.
+                      After sign-in you will be redirected to your Doctor Dashboard to view OP timings and patient appointments.
+                    </p>
+                  </div>
+                )}
+
+                <form onSubmit={handleLogin} className="space-y-4">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="email">{portal === 'hospital_member' ? 'Hospital Email ID' : 'Email address'}</Label>
+                    <Input id="email" type="email" placeholder={portal === 'hospital_member' ? "hospital@example.com" : "name@example.com"}
+                      value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
+                      required autoComplete="email" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="password">Password</Label>
+                      <button type="button" onClick={() => setMode('forgot')} className="text-xs text-primary hover:underline">
+                        Forgot password?
+                      </button>
+                    </div>
+                    <div className="relative">
+                      <Input id="password" type={showPassword ? 'text' : 'password'} placeholder="Enter your password"
+                        value={form.password} onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
+                        required className="pr-10" autoComplete="current-password" />
+                      <button type="button" onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Checkbox id="remember" checked={rememberMe} onCheckedChange={v => setRememberMe(!!v)} />
+                    <Label htmlFor="remember" className="text-sm font-normal cursor-pointer">Remember me</Label>
+                  </div>
+                  <Button type="submit" className="w-full" disabled={loading}>
+                    {loading ? 'Signing in…' : `Sign in as ${meta.title}`}
+                  </Button>
+                </form>
+
+                <p className="text-center text-sm text-muted-foreground mt-6">
+                  Don&apos;t have an account?{' '}
+                  <button onClick={() => setMode('signup')} className="text-primary hover:underline font-medium">
+                    Sign up
+                  </button>
+                </p>
+              </div>
+            )}
+
+            {/* ── SIGN UP ── */}
+            {mode === 'signup' && (
+              <div>
+                <button
+                  onClick={() => setMode('pick')}
+                  className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground mb-6 transition-colors"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5" /> All portals
+                </button>
+
+                {/* Portal badge */}
+                <div className={cn(
+                  'inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-medium mb-5',
+                  portal === 'patient'
+                    ? 'border-primary/20 bg-primary/10 text-primary'
+                    : portal === 'hospital_member'
+                      ? 'border-destructive/20 bg-destructive/10 text-destructive'
+                      : 'border-border bg-muted text-foreground'
+                )}>
+                  <PortalIcon className="w-3 h-3" />
+                  {meta.title} Portal
+                </div>
+
+                <div className="mb-8">
+                  <h1 className="text-2xl font-bold mb-1">Create a {meta.title.toLowerCase()} account</h1>
+                  <p className="text-sm text-muted-foreground">Join MediGuide AI today</p>
+                </div>
+                <form onSubmit={handleSignup} className="space-y-4">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="name">{portal === 'hospital_member' ? 'Hospital Name' : 'Full Name'}</Label>
+                    <Input id="name" placeholder={portal === 'hospital_member' ? 'Enter hospital name' : 'Your full name'}
+                      value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} required />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="signup-email">{portal === 'hospital_member' ? 'Hospital Email ID' : 'Email'}</Label>
+                    <Input id="signup-email" type="email" placeholder={portal === 'hospital_member' ? "hospital@example.com" : "name@example.com"}
+                      value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} required />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="signup-password">Password</Label>
+                    <div className="relative">
+                      <Input id="signup-password" type={showPassword ? 'text' : 'password'} placeholder="Min. 6 characters"
+                        value={form.password} onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
+                        required className="pr-10" />
+                      <button type="button" onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="confirm-password">Confirm Password</Label>
+                    <Input id="confirm-password" type="password" placeholder="Confirm your password"
+                      value={form.confirmPassword} onChange={e => setForm(p => ({ ...p, confirmPassword: e.target.value }))} required />
+                  </div>
+                  <Button type="submit" className="w-full" disabled={loading}>
+                    {loading ? 'Creating account…' : `Create ${meta.title} Account`}
+                  </Button>
+                </form>
+                <p className="text-center text-sm text-muted-foreground mt-6">
+                  Already have an account?{' '}
+                  <button onClick={() => { setMode('pick'); }} className="text-primary hover:underline font-medium">
+                    Sign in
+                  </button>
+                </p>
+              </div>
+            )}
+
+            {/* ── FORGOT PASSWORD ── */}
+            {mode === 'forgot' && (
+              <div>
+                <div className="mb-8">
+                  <h1 className="text-2xl font-bold mb-1">Reset password</h1>
+                  <p className="text-sm text-muted-foreground">We&apos;ll send a reset link to your email</p>
+                </div>
+                <div className="flex gap-3 p-4 bg-muted rounded-xl mb-6">
+                  <AlertCircle className="w-4 h-4 text-warning shrink-0 mt-0.5" />
+                  <p className="text-sm text-muted-foreground">
+                    Enter the email associated with your account and we&apos;ll send you a link to reset your password.
+                  </p>
+                </div>
+                <form onSubmit={handleForgot} className="space-y-4">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="reset-email">Email Address</Label>
+                    <Input id="reset-email" type="email" placeholder="name@example.com"
+                      value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} required />
+                  </div>
+                  <Button type="submit" className="w-full" disabled={loading}>
+                    {loading ? 'Sending…' : 'Send Reset Link'}
+                  </Button>
+                </form>
+                <button onClick={() => setMode('pick')}
+                  className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mt-6 mx-auto transition-colors">
+                  <ArrowLeft className="w-4 h-4" /> Back to portal selection
+                </button>
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+};
+
+export default AuthPage;
+```
+
+==========================================================
+FILE: src/pages/ReportMakerPage.tsx
+==========================================================
+```tsx
+import React, { useState, useRef } from 'react';
+import { Upload, FileText, CheckCircle2, Activity, HeartPulse, BrainCircuit, ListChecks, Send, Pill } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import AppLayout from '@/components/layouts/AppLayout';
+import { motion, AnimatePresence } from 'motion/react';
+import { toast } from 'sonner';
+
+const PRESCRIPTION_TRANSLATIONS: Record<string, any> = {
+  en: {
+    summary: 'Your prescription includes medications for managing blood pressure and acid reflux.',
+    metrics: [
+      { name: 'Amlodipine (5mg)', value: '1 tablet in the morning after breakfast', status: 'Blood Pressure' },
+      { name: 'Pantoprazole (40mg)', value: '1 tablet 30 minutes before breakfast', status: 'Acid Reflux' }
+    ],
+    suggestions: [
+      'Amlodipine (5mg): This helps relax your blood vessels to lower blood pressure. Take it at the same time every day.',
+      'Pantoprazole (40mg): This reduces stomach acid. Taking it on an empty stomach makes it work best.',
+      'Do not stop taking the blood pressure medication even if you feel fine, unless your doctor tells you to.'
+    ],
+    followUp: 'Take these medicines exactly as prescribed. Return for a check-up in 1 month.'
+  },
+  hi: {
+    summary: 'आपके नुस्खे में रक्तचाप और एसिड रिफ्लक्स के प्रबंधन के लिए दवाएं शामिल हैं।',
+    metrics: [
+      { name: 'एम्लोडिपिन (5mg)', value: 'सुबह नाश्ते के बाद 1 गोली', status: 'रक्तचाप' },
+      { name: 'पैंटोप्राज़ोल (40mg)', value: 'नाश्ते से 30 मिनट पहले 1 गोली', status: 'एसिड रिफ्लक्स' }
+    ],
+    suggestions: [
+      'एम्लोडिपिन (5mg): यह रक्तचाप को कम करने के लिए आपकी रक्त वाहिकाओं को आराम देने में मदद करता है। इसे हर दिन एक ही समय पर लें।',
+      'पैंटोप्राज़ोल (40mg): यह पेट के एसिड को कम करता है। इसे खाली पेट लेने से यह सबसे अच्छा काम करता है।',
+      'जब तक आपका डॉक्टर न कहे, तब तक रक्तचाप की दवा लेना बंद न करें।'
+    ],
+    followUp: 'इन दवाओं को बिल्कुल निर्देशानुसार लें। 1 महीने में चेक-अप के लिए वापस आएं।'
+  },
+  te: {
+    summary: 'మీ ప్రిస్క్రిప్షన్‌లో రక్తపోటు మరియు యాసిడ్ రిఫ్లక్స్‌ను నిర్వహించడానికి మందులు ఉన్నాయి.',
+    metrics: [
+      { name: 'ఆమ్లోడిపైన్ (5mg)', value: 'ఉదయం అల్పాహారం తర్వాత 1 టాబ్లెట్', status: 'రక్తపోటు' },
+      { name: 'పాంటోప్రజోల్ (40mg)', value: 'అల్పాహారానికి 30 నిమిషాల ముందు 1 టాబ్లెట్', status: 'యాసిడ్ రిఫ్లక్స్' }
+    ],
+    suggestions: [
+      'ఆమ్లోడిపైన్ (5mg): ఇది రక్తపోటును తగ్గించడానికి మీ రక్త నాళాలను విశ్రాంతి తీసుకోవడానికి సహాయపడుతుంది. ప్రతిరోజూ ఒకే సమయానికి తీసుకోండి.',
+      'పాంటోప్రజోల్ (40mg): ఇది కడుపు ఆమ్లాన్ని తగ్గిస్తుంది. ఖాళీ కడుపుతో తీసుకోవడం ఉత్తమంగా పనిచేస్తుంది.',
+      'మీ వైద్యుడు చెప్పకపోతే రక్తపోటు మందులు వేసుకోవడం ఆపవద్దు.'
+    ],
+    followUp: 'ఈ మందులను సూచించిన విధంగానే తీసుకోండి. 1 నెలలో చెక్-అప్ కోసం తిరిగి రండి.'
+  },
+  ta: {
+    summary: 'உங்கள் மருந்துச் சீட்டில் இரத்த அழுத்தம் மற்றும் அமில வீச்சைக் கட்டுப்படுத்துவதற்கான மருந்துகள் உள்ளன.',
+    metrics: [
+      { name: 'அம்லோடிபைன் (5mg)', value: 'காலை உணவுக்குப் பிறகு 1 மாத்திரை', status: 'இரத்த அழுத்தம்' },
+      { name: 'பான்டோப்ராசோல் (40mg)', value: 'காலை உணவுக்கு 30 நிமிடங்களுக்கு முன் 1 மாத்திரை', status: 'அமில வீச்சு' }
+    ],
+    suggestions: [
+      'அம்லோடிபைன் (5mg): இது இரத்த அழுத்தத்தைக் குறைக்க உங்கள் இரத்த நாளங்களைத் தளர்த்த உதவுகிறது. தினமும் ஒரே நேரத்தில் எடுத்துக் கொள்ளுங்கள்.',
+      'பான்டோப்ராசோல் (40mg): இது வயிற்று அமிலத்தைக் குறைக்கிறது. வெறும் வயிற்றில் எடுத்துக்கொள்வது சிறப்பாக வேலை செய்யும்.',
+      'உங்கள் மருத்துவர் கூறாவிட்டால், இரத்த அழுத்த மருந்தை நிறுத்திவிடாதீர்கள்.'
+    ],
+    followUp: 'இந்த மருந்துகளை பரிந்துரைக்கப்பட்டபடியே எடுத்துக் கொள்ளுங்கள். 1 மாதத்தில் பரிசோதனைக்குத் திரும்பவும்.'
+  }
+};
+
+const REPORT_TRANSLATIONS: Record<string, any> = {
+  en: {
+    summary: 'Your Complete Blood Count (CBC) and Lipid Profile show mostly normal ranges. However, your LDL cholesterol is slightly elevated, and your Vitamin D levels are below the optimal range.',
+    metrics: [
+      { name: 'Hemoglobin', value: '14.2 g/dL', status: 'normal' },
+      { name: 'Total Cholesterol', value: '210 mg/dL', status: 'borderline' },
+      { name: 'LDL (Bad) Cholesterol', value: '135 mg/dL', status: 'elevated' },
+      { name: 'Vitamin D (25-OH)', value: '18 ng/mL', status: 'low' },
+      { name: 'Fasting Blood Sugar', value: '92 mg/dL', status: 'normal' }
+    ],
+    suggestions: [
+      'Increase intake of Omega-3 rich foods (e.g., salmon, walnuts) to help manage cholesterol.',
+      'Consider a daily Vitamin D supplement after consulting with your doctor.',
+      'Engage in 30 minutes of moderate aerobic exercise 5 days a week.',
+      'Reduce saturated fats and trans fats in your diet.'
+    ],
+    followUp: 'Schedule a routine follow-up with your primary care physician in 3-6 months to monitor your lipid profile and Vitamin D levels.'
+  },
+  hi: {
+    summary: 'आपकी पूर्ण रक्त गणना (CBC) और लिपिड प्रोफ़ाइल ज्यादातर सामान्य सीमा दिखाते हैं। हालांकि, आपका LDL कोलेस्ट्रॉल थोड़ा बढ़ा हुआ है, और आपका विटामिन डी का स्तर इष्टतम सीमा से नीचे है।',
+    metrics: [
+      { name: 'हीमोग्लोबिन', value: '14.2 g/dL', status: 'normal' },
+      { name: 'कुल कोलेस्ट्रॉल', value: '210 mg/dL', status: 'borderline' },
+      { name: 'LDL (खराब) कोलेस्ट्रॉल', value: '135 mg/dL', status: 'elevated' },
+      { name: 'विटामिन डी (25-OH)', value: '18 ng/mL', status: 'low' },
+      { name: 'उपवास रक्त शर्करा', value: '92 mg/dL', status: 'normal' }
+    ],
+    suggestions: [
+      'कोलेस्ट्रॉल को प्रबंधित करने में मदद के लिए ओमेगा-3 युक्त खाद्य पदार्थों (जैसे, सामन, अखरोट) का सेवन बढ़ाएं।',
+      'अपने डॉक्टर से परामर्श के बाद दैनिक विटामिन डी सप्लीमेंट पर विचार करें।',
+      'सप्ताह में 5 दिन 30 मिनट का मध्यम एरोबिक व्यायाम करें।',
+      'अपने आहार में संतृप्त वसा और ट्रांस वसा कम करें।'
+    ],
+    followUp: 'अपने लिपिड प्रोफ़ाइल और विटामिन डी के स्तर की निगरानी के लिए 3-6 महीनों में अपने प्राथमिक देखभाल चिकित्सक के साथ नियमित अनुवर्ती कार्रवाई निर्धारित करें।'
+  },
+  te: {
+    summary: 'మీ కంప్లీట్ బ్లడ్ కౌంట్ (CBC) మరియు లిపిడ్ ప్రొఫైల్ సాధారణంగా సాధారణ పరిధులను చూపుతున్నాయి. అయితే, మీ LDL కొలెస్ట్రాల్ కొద్దిగా పెరిగింది మరియు మీ విటమిన్ D స్థాయిలు వాంఛనీయ పరిధి కంటే తక్కువగా ఉన్నాయి.',
+    metrics: [
+      { name: 'హీమోగ్లోబిన్', value: '14.2 g/dL', status: 'normal' },
+      { name: 'మొత్తం కొలెస్ట్రాల్', value: '210 mg/dL', status: 'borderline' },
+      { name: 'LDL (చెడు) కొలెస్ట్రాల్', value: '135 mg/dL', status: 'elevated' },
+      { name: 'విటమిన్ D (25-OH)', value: '18 ng/mL', status: 'low' },
+      { name: 'ఫాస్టింగ్ బ్లడ్ షుగర్', value: '92 mg/dL', status: 'normal' }
+    ],
+    suggestions: [
+      'కొలెస్ట్రాల్‌ను నిర్వహించడంలో సహాయపడటానికి ఒమేగా-3 అధికంగా ఉండే ఆహారాలు (ఉదా., సాల్మన్, వాల్‌నట్స్) తీసుకోవడం పెంచండి.',
+      'మీ వైద్యుడిని సంప్రదించిన తర్వాత రోజువారీ విటమిన్ D సప్లిమెంట్‌ను పరిగణించండి.',
+      'వారానికి 5 రోజులు 30 నిమిషాల మోడరేట్ ఏరోబిక్ వ్యాయామం చేయండి.',
+      'మీ ఆహారంలో సంతృప్త కొవ్వులు మరియు ట్రాన్స్ ఫ్యాట్స్ తగ్గించండి.'
+    ],
+    followUp: 'మీ లిపిడ్ ప్రొఫైల్ మరియు విటమిన్ D స్థాయిలను పర్యవేక్షించడానికి 3-6 నెలల్లో మీ ప్రాథమిక సంరక్షణ వైద్యునితో సాధారణ ఫాలో-అప్‌ను షెడ్యూల్ చేయండి.'
+  },
+  ta: {
+    summary: 'உங்கள் முழுமையான இரத்த எண்ணிக்கை (CBC) மற்றும் லிப்பிட் சுயவிவரம் பெரும்பாலும் சாதாரண வரம்புகளைக் காட்டுகின்றன. இருப்பினும், உங்கள் LDL கொலஸ்ட்ரால் சற்று அதிகரித்துள்ளது, மேலும் உங்கள் வைட்டமின் டி அளவுகள் உகந்த வரம்பிற்கு கீழே உள்ளன.',
+    metrics: [
+      { name: 'ஹீமோகுளோபின்', value: '14.2 g/dL', status: 'normal' },
+      { name: 'மொத்த கொலஸ்ட்ரால்', value: '210 mg/dL', status: 'borderline' },
+      { name: 'LDL (கெட்ட) கொலஸ்ட்ரால்', value: '135 mg/dL', status: 'elevated' },
+      { name: 'வைட்டமின் டி (25-OH)', value: '18 ng/mL', status: 'low' },
+      { name: 'உண்ணாவிரத இரத்த சர்க்கரை', value: '92 mg/dL', status: 'normal' }
+    ],
+    suggestions: [
+      'கொலஸ்ட்ராலைக் கட்டுப்படுத்த ஒமேகா-3 நிறைந்த உணவுகளை (உதாரணமாக, சால்மன், அக்ரூட் பருப்புகள்) உட்கொள்வதை அதிகரிக்கவும்.',
+      'உங்கள் மருத்துவரை அணுகிய பிறகு தினசரி வைட்டமின் டி சப்ளிமெண்ட்டைக் கவனியுங்கள்.',
+      'வாரத்தில் 5 நாட்கள் 30 நிமிட மிதமான ஏரோபிக் பயிற்சியில் ஈடுபடுங்கள்.',
+      'உங்கள் உணவில் நிறைவுற்ற கொழுப்புகள் மற்றும் டிரான்ஸ் கொழுப்புகளை குறைக்கவும்.'
+    ],
+    followUp: 'உங்கள் லிப்பிட் சுயவிவரம் மற்றும் வைட்டமின் டி அளவைக் கண்காணிக்க 3-6 மாதங்களில் உங்கள் முதன்மை சிகிச்சை மருத்துவரிடம் வழக்கமான பின்தொடர்தலை திட்டமிடுங்கள்.'
+  }
+};
+
+const ReportMakerPage: React.FC = () => {
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isRequesting, setIsRequesting] = useState(false);
+  const [language, setLanguage] = useState('en');
+  const [analysisResult, setAnalysisResult] = useState<any | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [analysisType, setAnalysisType] = useState<'report' | 'prescription'>('report');
+
+  const simulateAnalysis = () => {
+    setIsAnalyzing(true);
+    setAnalysisResult(null);
+    setTimeout(() => {
+      if (analysisType === 'prescription') {
+        setAnalysisResult(PRESCRIPTION_TRANSLATIONS[language] || PRESCRIPTION_TRANSLATIONS['en']);
+      } else {
+        setAnalysisResult(REPORT_TRANSLATIONS[language] || REPORT_TRANSLATIONS['en']);
+      }
+      setIsAnalyzing(false);
+    }, 3000);
+  };
+
+  const handleSendToDoctor = () => {
+    setIsRequesting(true);
+    setTimeout(() => {
+      toast.success('Report analysis sent to doctor for confirmation successfully!');
+      setIsRequesting(false);
+    }, 1500);
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    simulateAnalysis();
+  };
+
+  return (
+    <AppLayout title="AI Medical Report Maker">
+      <div className="max-w-5xl space-y-6">
+        <Card className="border-primary/20 shadow-sm overflow-hidden">
+          <div className="bg-primary/5 p-8 border-b border-border text-center space-y-3">
+            <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-2">
+              <BrainCircuit className="w-8 h-8 text-primary" />
+            </div>
+            <h2 className="text-2xl font-bold text-primary">Understand Your Medical Documents</h2>
+            <p className="text-sm text-muted-foreground max-w-xl mx-auto">
+              Upload your medical reports or medicine prescriptions. Our AI will translate complex medical jargon into plain English and provide actionable health suggestions.
+            </p>
+            
+            <div className="flex justify-center mt-4">
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-medium text-foreground">Analysis Language:</span>
+                <Select value={language} onValueChange={(val) => {
+                  setLanguage(val);
+                  if (analysisResult) {
+                    if (analysisType === 'prescription') {
+                      setAnalysisResult(PRESCRIPTION_TRANSLATIONS[val] || PRESCRIPTION_TRANSLATIONS['en']);
+                    } else {
+                      setAnalysisResult(REPORT_TRANSLATIONS[val] || REPORT_TRANSLATIONS['en']);
+                    }
+                  }
+                }}>
+                  <SelectTrigger className="w-40 bg-background">
+                    <SelectValue placeholder="Language" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="en">English</SelectItem>
+                    <SelectItem value="hi">Hindi (हिंदी)</SelectItem>
+                    <SelectItem value="te">Telugu (తెలుగు)</SelectItem>
+                    <SelectItem value="ta">Tamil (தமிழ்)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+          <CardContent className="p-8">
+            <Tabs defaultValue="report" className="w-full max-w-2xl mx-auto" onValueChange={(v) => {
+              setAnalysisType(v as 'report' | 'prescription');
+              setAnalysisResult(null);
+            }}>
+              <TabsList className="grid w-full grid-cols-2 mb-8">
+                <TabsTrigger value="report">Lab Report</TabsTrigger>
+                <TabsTrigger value="prescription">Medicine Prescription</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="report" className="flex justify-center">
+                <Button 
+                  size="lg" 
+                  className="h-32 w-full max-w-md flex flex-col items-center justify-center gap-3 border-dashed border-2 text-lg"
+                  variant="outline"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isAnalyzing}
+                >
+                  <Upload className="w-8 h-8 text-primary" />
+                  <span>Upload Report PDF / Image</span>
+                  <span className="text-xs font-normal text-muted-foreground">Supports PDF, JPG, PNG</span>
+                </Button>
+              </TabsContent>
+              
+              <TabsContent value="prescription" className="flex justify-center">
+                <Button 
+                  size="lg" 
+                  className="h-32 w-full max-w-md flex flex-col items-center justify-center gap-3 border-dashed border-2 text-lg"
+                  variant="outline"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isAnalyzing}
+                >
+                  <Pill className="w-8 h-8 text-primary" />
+                  <span>Upload Prescription Image</span>
+                  <span className="text-xs font-normal text-muted-foreground">Supports JPG, PNG</span>
+                </Button>
+              </TabsContent>
+            </Tabs>
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              className="hidden" 
+              accept="application/pdf,image/*"
+              onChange={handleFileUpload}
+            />
+          </CardContent>
+        </Card>
+
+        {isAnalyzing && (
+          <Card>
+            <CardContent className="p-10 text-center space-y-5">
+              <div className="flex justify-center space-x-2 mb-4">
+                <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+              </div>
+              <h3 className="text-lg font-semibold text-primary">AI is analyzing your document...</h3>
+              <p className="text-sm text-muted-foreground">Extracting information, comparing with standard databases, and generating simple explanations.</p>
+            </CardContent>
+          </Card>
+        )}
+
+        <AnimatePresence>
+          {analysisResult && !isAnalyzing && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="grid lg:grid-cols-3 gap-6"
+            >
+              <div className="lg:col-span-2 space-y-6">
+                <Card>
+                  <CardHeader className="bg-primary/5 pb-4 border-b border-border">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <FileText className="w-5 h-5 text-primary" /> Executive Summary
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-6">
+                    <p className="text-sm leading-relaxed text-foreground">
+                      {analysisResult.summary}
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="bg-primary/5 pb-4 border-b border-border">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <ListChecks className="w-5 h-5 text-primary" /> {analysisType === 'prescription' ? 'Instructions & Precautions' : 'Actionable Suggestions'}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-6">
+                    <ul className="space-y-3">
+                      {analysisResult.suggestions.map((suggestion: string, idx: number) => (
+                        <li key={idx} className="flex items-start gap-3">
+                          <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+                          <span className="text-sm text-muted-foreground leading-relaxed">{suggestion}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+
+                <div className="mt-6 flex justify-end">
+                  <Button onClick={handleSendToDoctor} disabled={isRequesting} className="w-full sm:w-auto">
+                    <Send className="w-4 h-4 mr-2" />
+                    {isRequesting ? 'Sending Request...' : 'Send to Doctor for Confirmation'}
+                  </Button>
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <Card>
+                  <CardHeader className="bg-primary/5 pb-4 border-b border-border">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Activity className="w-5 h-5 text-primary" /> {analysisType === 'prescription' ? 'Medication Details' : 'Key Metrics'}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <div className="divide-y divide-border">
+                      {analysisResult.metrics.map((metric: any, idx: number) => (
+                        <div key={idx} className="p-4 flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium">{metric.name}</p>
+                            <p className="text-xs text-muted-foreground mt-1">{metric.value}</p>
+                          </div>
+                          <span className={`text-[10px] uppercase font-bold tracking-wider px-2 py-1 rounded-full ${
+                            analysisType === 'prescription' ? 'bg-primary/10 text-primary' :
+                            metric.status === 'normal' ? 'bg-green-500/10 text-green-600' :
+                            metric.status === 'borderline' ? 'bg-warning/10 text-warning' :
+                            'bg-destructive/10 text-destructive'
+                          }`}>
+                            {metric.status}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Alert className="bg-blue-500/5 text-blue-700 border-blue-500/20">
+                  <HeartPulse className="w-4 h-4 text-blue-600" />
+                  <AlertDescription className="text-xs ml-2 mt-1 font-medium">
+                    {analysisResult.followUp}
+                  </AlertDescription>
+                </Alert>
+              </div>
+
+              <div className="lg:col-span-3">
+                <Alert className="bg-muted text-muted-foreground border-border">
+                  <AlertDescription className="text-xs text-center">
+                    <strong>Disclaimer:</strong> This AI-generated report summary is intended for informational and educational purposes only. It is not a substitute for professional medical advice, diagnosis, or treatment.
+                  </AlertDescription>
+                </Alert>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </AppLayout>
+  );
+};
+
+export default ReportMakerPage;
+```
+
+==========================================================
+FILE: src/components/layouts/TopBar.tsx
+==========================================================
+```tsx
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Sun, Moon, Bell, ChevronDown, Menu, Activity } from 'lucide-react';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useApp } from '@/contexts/AppContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenuSeparator, DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Badge } from '@/components/ui/badge';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import Sidebar from './Sidebar';
+import { notifications } from '@/data/sampleData';
+
+interface TopBarProps {
+  title?: string;
+  subtitle?: string;
+}
+
+const TopBar: React.FC<TopBarProps> = ({ title, subtitle }) => {
+  const { theme, toggleTheme } = useTheme();
+  const { setSidebarOpen, sidebarOpen } = useApp();
+  const { profile, signOut } = useAuth();
+  const navigate = useNavigate();
+  const unread = notifications.filter(n => !n.read).length;
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/login', { replace: true });
+  };
+
+  return (
+    <header className="sticky top-0 z-30 h-14 flex items-center gap-4 border-b border-border bg-background/95 backdrop-blur-sm px-4 md:px-6">
+      {/* Mobile menu */}
+      <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
+        <SheetTrigger asChild>
+          <Button variant="ghost" size="icon" className="lg:hidden shrink-0">
+            <Menu className="w-5 h-5" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="p-0 w-72 bg-sidebar">
+          <Sidebar mobile onClose={() => setSidebarOpen(false)} />
+        </SheetContent>
+      </Sheet>
+
+      {/* Mobile logo */}
+      <Link to="/" className="flex items-center gap-2 lg:hidden">
+        <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
+          <Activity className="w-3.5 h-3.5 text-primary-foreground" />
+        </div>
+        <span className="font-semibold text-sm">MediGuide AI</span>
+      </Link>
+
+      {/* Title area */}
+      {title && (
+        <div className="hidden lg:block">
+          <h1 className="text-base font-semibold text-foreground">{title}</h1>
+          {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
+        </div>
+      )}
+
+      <div className="ml-auto flex items-center gap-2">
+        {/* Dark mode */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleTheme}
+          aria-label="Toggle theme"
+          className="shrink-0"
+        >
+          {theme === 'dark'
+            ? <Sun className="w-4 h-4" />
+            : <Moon className="w-4 h-4" />
+          }
+        </Button>
+
+        {/* Notifications */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="relative shrink-0"
+          onClick={() => navigate('/notifications')}
+          aria-label="Notifications"
+        >
+          <Bell className="w-4 h-4" />
+          {unread > 0 && (
+            <Badge className="absolute -top-0.5 -right-0.5 h-4 min-w-4 px-1 text-[10px] font-bold bg-accent text-accent-foreground border-0">
+              {unread}
+            </Badge>
+          )}
+        </Button>
+
+        {/* User avatar */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-muted transition-colors">
+              <img
+                src={`https://ui-avatars.com/api/?name=${encodeURIComponent(profile?.name || 'User')}&background=2563EB&color=fff`}
+                alt={profile?.name || 'User'}
+                className="w-7 h-7 rounded-full object-cover"
+              />
+              <span className="hidden md:block text-sm font-medium max-w-28 truncate">{profile?.name}</span>
+              <ChevronDown className="w-3.5 h-3.5 text-muted-foreground hidden md:block" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuItem onClick={() => navigate('/profile')}>My Profile</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate('/settings')}>Settings</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={handleSignOut}
+              className="text-destructive focus:text-destructive cursor-pointer"
+            >
+              Sign Out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </header>
+  );
+};
+
+export default TopBar;
+```
+
+==========================================================
+FILE: src/pages/PatientDashboard.tsx
+==========================================================
+```tsx
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'motion/react';
+import {
+  Calendar, Bot, Mic, Stethoscope, FileText, Bell,
+  Clock, TrendingUp, Heart, Activity, ArrowRight, Plus,
+  AlertTriangle, Salad, MapPin,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
+import AppLayout from '@/components/layouts/AppLayout';
+import { useApp } from '@/contexts/AppContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { getUpcomingAppointments, getNotifications } from '@/lib/api';
+import type { Appointment, Notification } from '@/types/types';
+import { cn } from '@/lib/utils';
+
+const quickActions = [
+  { icon: Calendar,      label: 'Book Appointment',  path: '/appointments', color: 'primary' },
+  { icon: Bot,           label: 'AI Chat',           path: '/chat',         color: 'accent' },
+  { icon: FileText,      label: 'Report Maker',      path: '/report-maker', color: 'primary' },
+  { icon: Stethoscope,   label: 'Find Doctor',       path: '/doctors',      color: 'accent' },
+  { icon: FileText,      label: 'Medical Reports',   path: '/reports',      color: 'primary' },
+  { icon: Bell,          label: 'Medicine Reminder', path: '/reminders',    color: 'accent' },
+  { icon: AlertTriangle, label: 'Emergency SOS',     path: '/emergency',    color: 'primary' },
+  { icon: FileText,      label: 'Pill Scanner',      path: '/pill-scanner', color: 'accent' },
+  { icon: Salad,         label: 'Diet & Health',     path: '/diet',         color: 'primary' },
+  { icon: MapPin,        label: 'Hospital Locations',path: '/hospital-map', color: 'accent' },
+];
+
+const healthStats = [
+  { label: 'Heart Rate', value: '72', unit: 'bpm', icon: Heart, trend: '+2%', good: true },
+  { label: 'Blood Pressure', value: '120/80', unit: 'mmHg', icon: Activity, trend: 'Normal', good: true },
+  { label: 'BMI', value: '22.4', unit: 'kg/m²', icon: TrendingUp, trend: 'Healthy', good: true },
+  { label: 'Next Checkup', value: '7', unit: 'days', icon: Clock, trend: 'Upcoming', good: false },
+];
+
+const statusColors: Record<string, string> = {
+  confirmed: 'bg-green-500/10 text-green-600 border-green-200',
+  pending: 'bg-warning/10 text-warning border-warning/20',
+  cancelled: 'bg-destructive/10 text-destructive border-destructive/20',
+  'in-progress': 'bg-primary/10 text-primary border-primary/20',
+  completed: 'bg-muted text-muted-foreground border-border',
+};
+
+const PatientDashboard: React.FC = () => {
+  const { user } = useApp();
+  const { user: authUser } = useAuth();
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [notifs, setNotifs] = useState<Notification[]>([]);
+  const [loadingAppts, setLoadingAppts] = useState(true);
+  const [loadingNotifs, setLoadingNotifs] = useState(true);
+
+  useEffect(() => {
+    if (!authUser?.id) return;
+    getUpcomingAppointments(authUser.id)
+      .then(setAppointments)
+      .finally(() => setLoadingAppts(false));
+    getNotifications(authUser.id)
+      .then(setNotifs)
+      .finally(() => setLoadingNotifs(false));
+  }, [authUser?.id]);
+
+  const unreadNotifs = notifs.filter(n => !n.read);
+
+  return (
+    <AppLayout title="Patient Dashboard">
+      <div className="space-y-6 max-w-7xl">
+        {/* Welcome */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 bg-primary rounded-xl text-primary-foreground"
+        >
+          <div className="flex items-center gap-4">
+            <img
+              src={user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=2563EB&color=fff`}
+              alt={user?.name}
+              className="w-14 h-14 rounded-full object-cover border-2 border-white/30"
+            />
+            <div>
+              <p className="text-sm text-primary-foreground/70">Welcome back,</p>
+              <h2 className="text-xl font-bold">{user?.name || 'Patient'}</h2>
+              <p className="text-sm text-primary-foreground/70">How are you feeling today?</p>
+            </div>
+          </div>
+          <Button asChild variant="secondary" size="sm">
+            <Link to="/appointments"><Plus className="w-4 h-4 mr-1.5" /> Book Appointment</Link>
+          </Button>
+        </motion.div>
+
+        <div className="grid lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6">
+            {/* Quick Actions */}
+            <Card>
+              <CardHeader className="pb-3"><CardTitle className="text-base">Quick Actions</CardTitle></CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {quickActions.map((action, i) => {
+                    const Icon = action.icon;
+                    return (
+                      <motion.div key={action.label} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.06 }}>
+                        <Link to={action.path} className={cn('flex flex-col items-center gap-2 p-4 rounded-xl border border-border hover:border-primary/30 hover:shadow-hover transition-all group text-center')}>
+                          <div className={cn('w-10 h-10 rounded-lg flex items-center justify-center transition-colors', action.color === 'primary' ? 'bg-primary/10 group-hover:bg-primary/20' : 'bg-accent/10 group-hover:bg-accent/20')}>
+                            <Icon className={cn('w-5 h-5', action.color === 'primary' ? 'text-primary' : 'text-accent')} />
+                          </div>
+                          <span className="text-xs font-medium leading-tight">{action.label}</span>
+                        </Link>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Upcoming Appointments */}
+            <Card>
+              <CardHeader className="pb-3 flex flex-row items-center justify-between">
+                <CardTitle className="text-base">Upcoming Appointments</CardTitle>
+                <Button asChild variant="ghost" size="sm" className="text-primary h-auto p-0">
+                  <Link to="/appointments">View all <ArrowRight className="w-3.5 h-3.5 ml-1" /></Link>
+                </Button>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {loadingAppts ? (
+                  [1,2,3].map(i => (
+                    <div key={i} className="flex items-center gap-3 p-3">
+                      <Skeleton className="w-10 h-10 rounded-full" />
+                      <div className="flex-1 space-y-2"><Skeleton className="h-3 w-3/4" /><Skeleton className="h-3 w-1/2" /></div>
+                    </div>
+                  ))
+                ) : appointments.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Calendar className="w-8 h-8 text-muted-foreground mx-auto mb-2 opacity-40" />
+                    <p className="text-sm text-muted-foreground">No upcoming appointments</p>
+                    <Button asChild size="sm" className="mt-3"><Link to="/appointments">Book Now</Link></Button>
+                  </div>
+                ) : appointments.map((appt) => (
+                  <div key={appt.id} className="flex items-center gap-3 p-3 rounded-lg border border-border hover:bg-muted/30 transition-colors">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <Stethoscope className="w-4 h-4 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{appt.doctor_name}</p>
+                      <p className="text-xs text-muted-foreground">{appt.department} · {appt.type}</p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="text-xs font-medium">{appt.date}</p>
+                      <p className="text-xs text-muted-foreground">{appt.time}</p>
+                    </div>
+                    <Badge className={cn('text-xs ml-2 shrink-0', statusColors[appt.status])}>{appt.status}</Badge>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Notifications Panel */}
+          <div className="space-y-4">
+            <Card className="h-fit">
+              <CardHeader className="pb-3 flex flex-row items-center justify-between">
+                <CardTitle className="text-base">Notifications</CardTitle>
+                <Badge className="bg-accent text-accent-foreground text-xs">{unreadNotifs.length} new</Badge>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {loadingNotifs ? (
+                  [1,2,3].map(i => <Skeleton key={i} className="h-16 w-full rounded-lg" />)
+                ) : notifs.length === 0 ? (
+                  <div className="text-center py-6">
+                    <Bell className="w-7 h-7 text-muted-foreground mx-auto mb-2 opacity-40" />
+                    <p className="text-xs text-muted-foreground">No notifications yet</p>
+                  </div>
+                ) : notifs.slice(0, 5).map((notif) => (
+                  <div key={notif.id} className={cn('p-3 rounded-lg border transition-colors', notif.read ? 'border-border' : 'border-primary/20 bg-primary/5')}>
+                    <div className="flex items-start gap-2">
+                      {!notif.read && <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />}
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold mb-0.5">{notif.title}</p>
+                        <p className="text-xs text-muted-foreground leading-snug">{notif.message}</p>
+                        <p className="text-xs text-muted-foreground/60 mt-1">{new Date(notif.created_at).toLocaleDateString()}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                <Button asChild variant="ghost" size="sm" className="w-full text-primary">
+                  <Link to="/notifications">View all notifications</Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Health Summary */}
+            <Card>
+              <CardHeader className="pb-3"><CardTitle className="text-base">Health Summary</CardTitle></CardHeader>
+              <CardContent className="space-y-3">
+                {[
+                  { label: 'Appointments this month', value: appointments.length, pct: Math.min(appointments.length * 20, 100), color: 'bg-primary' },
+                  { label: 'Medication adherence', value: '92%', pct: 92, color: 'bg-green-500' },
+                ].map(s => (
+                  <div key={s.label} className="space-y-2">
+                    <div className="flex justify-between text-xs">
+                      <span className="text-muted-foreground">{s.label}</span>
+                      <span className="font-semibold">{s.value}</span>
+                    </div>
+                    <div className="w-full bg-muted rounded-full h-1.5">
+                      <div className={cn('h-1.5 rounded-full', s.color)} style={{ width: `${s.pct}%` }} />
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </AppLayout>
+  );
+};
+
+export default PatientDashboard;
+```
+
+==========================================================
+FILE: src/pages/AppointmentBooking.tsx
+==========================================================
+```tsx
+import React, { useEffect, useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Check, ChevronRight, Calendar, Clock, User, Stethoscope, FileText, CheckCircle, MapPin, Search, IndianRupee, Building2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Card, CardContent } from '@/components/ui/card';
+import AppLayout from '@/components/layouts/AppLayout';
+import { useAuth } from '@/contexts/AuthContext';
+import { getDoctors, createAppointment, updateProfile } from '@/lib/api';
+import type { Doctor, ApptType } from '@/types/types';
+import { cn, formatINR } from '@/lib/utils';
+import { toast } from 'sonner';
+import { LOCATIONS } from '@/data/locations';
+import type { Location } from '@/data/locations';
+
+const STEPS = ['Patient Info', 'Location', 'Department', 'Doctor', 'Date & Time', 'Symptoms', 'Confirm'];
+const DEPARTMENTS = ['Cardiology', 'Neurology', 'Pediatrics', 'Orthopedics', 'Dermatology', 'Psychiatry', 'General Medicine', 'Gastroenterology'];
+const timeSlots = ['9:00 AM', '9:30 AM', '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '2:00 PM', '2:30 PM', '3:00 PM', '3:30 PM', '4:00 PM', '4:30 PM'];
+
+
+
+
+interface FormData {
+  name: string; age: string; gender: string; mobile: string;
+  locationId: string;
+  department: string; doctorId: string;
+  date: string; time: string; symptoms: string;
+}
+
+// ── LocationPicker: city-grouped search + list ────────────────────────────────
+const LocationPicker: React.FC<{ value: string; onChange: (id: string) => void }> = ({ value, onChange }) => {
+  const [search, setSearch] = useState('');
+
+  const filtered = useMemo(() => {
+    const q = search.toLowerCase().trim();
+    return q ? LOCATIONS.filter(l =>
+      l.name.toLowerCase().includes(q) ||
+      l.city.toLowerCase().includes(q) ||
+      l.type.toLowerCase().includes(q)
+    ) : LOCATIONS;
+  }, [search]);
+
+  // Group by city
+  const grouped = useMemo(() => {
+    const map = new Map<string, Location[]>();
+    filtered.forEach(loc => {
+      if (!map.has(loc.city)) map.set(loc.city, []);
+      map.get(loc.city)!.push(loc);
+    });
+    return map;
+  }, [filtered]);
+
+  return (
+    <div className="space-y-3">
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <input
+          type="text" value={search} onChange={e => setSearch(e.target.value)}
+          placeholder="Search city or hospital…"
+          className="w-full pl-9 pr-3 py-2.5 text-sm rounded-xl border border-border bg-background focus:outline-none focus:ring-1 focus:ring-primary/40" />
+      </div>
+
+      {/* City-grouped list */}
+      <div className="max-h-80 overflow-y-auto space-y-4 pr-1">
+        {grouped.size === 0 && (
+          <p className="text-sm text-muted-foreground text-center py-6">No locations found for "{search}"</p>
+        )}
+        {Array.from(grouped.entries()).map(([city, locs]) => (
+          <div key={city}>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2 px-1">{city}</p>
+            <div className="space-y-2">
+              {locs.map(loc => (
+                <button key={loc.id} onClick={() => onChange(loc.id)}
+                  className={cn('w-full flex items-start gap-3 p-3 rounded-xl border text-left transition-all',
+                    value === loc.id ? 'border-primary bg-primary/10' : 'border-border hover:border-primary/40')}>
+                  <div className={cn('w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5',
+                    value === loc.id ? 'bg-primary text-primary-foreground' : 'bg-muted')}>
+                    <MapPin className="w-3.5 h-3.5" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium">{loc.name}</p>
+                    <p className="text-xs text-primary/80 font-medium">{loc.type}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5 truncate">{loc.address}</p>
+                  </div>
+                  {value === loc.id && <Check className="w-4 h-4 text-primary shrink-0 mt-1" />}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const AppointmentBooking: React.FC = () => {
+  const { user: authUser, profile } = useAuth();
+  const [step, setStep] = useState(0);
+  const [confirmed, setConfirmed] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [loadingDoctors, setLoadingDoctors] = useState(false);
+  const [form, setForm] = useState<FormData>({
+    name: profile?.name || '', age: '', gender: '', mobile: profile?.phone || '',
+    locationId: '', department: '', doctorId: '', date: '', time: '', symptoms: '',
+  });
+
+  // Update form name when profile loads
+  useEffect(() => {
+    if (profile) setForm(p => ({ ...p, name: p.name || profile.name, mobile: p.mobile || profile.phone || '' }));
+  }, [profile]);
+
+  // Load doctors when department changes (step 3 — after location + department chosen)
+  useEffect(() => {
+    if (step === 3 && form.department) {
+      setLoadingDoctors(true);
+      getDoctors(form.department).then(setDoctors).finally(() => setLoadingDoctors(false));
+    }
+  }, [step, form.department]);
+
+  const selectedDoctor = doctors.find(d => d.id === form.doctorId);
+  const selectedLocation = LOCATIONS.find(l => l.id === form.locationId);
+
+  const canProceed = () => {
+    if (step === 0) return !!(form.name && form.age && form.gender && form.mobile);
+    if (step === 1) return !!form.locationId;
+    if (step === 2) return !!form.department;
+    if (step === 3) return !!form.doctorId;
+    if (step === 4) return !!(form.date && form.time);
+    return true;
+  };
+
+  const handleSubmit = async () => {
+    if (!authUser?.id) { toast.error('Please sign in to book an appointment.'); return; }
+    setSubmitting(true);
+
+    // Save patient details back to their profile (name, phone, gender, address)
+    const profileUpdates: Record<string, string> = {};
+    if (form.name && !profile?.name) profileUpdates.name = form.name;
+    if (form.mobile && !profile?.phone) profileUpdates.phone = form.mobile;
+    if (form.gender && !(profile as any)?.gender) profileUpdates.gender = form.gender;
+    if (Object.keys(profileUpdates).length > 0) {
+      await updateProfile(authUser.id, profileUpdates as any);
+    }
+
+    const result = await createAppointment({
+      doctor_id: form.doctorId || undefined,
+      doctor_name: selectedDoctor?.name || 'TBD',
+      department: form.department,
+      date: form.date,
+      time: form.time,
+      symptoms: form.symptoms || undefined,
+      type: 'Consultation' as ApptType,
+      notes: selectedLocation ? `Location: ${selectedLocation.name}, ${selectedLocation.city}` : undefined,
+    });
+    setSubmitting(false);
+    if (!result) { toast.error('Failed to book appointment. Please try again.'); return; }
+    toast.success('Appointment booked successfully!');
+    setConfirmed(true);
+  };
+
+  if (confirmed) {
+    return (
+      <AppLayout title="Appointment Booking">
+        <div className="max-w-md mx-auto mt-8">
+          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center">
+            <div className="w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-6">
+              <CheckCircle className="w-10 h-10 text-green-500" />
+            </div>
+            <h2 className="text-2xl font-bold mb-2">Appointment Confirmed!</h2>
+            <p className="text-muted-foreground mb-8">Your appointment has been successfully booked. You&apos;ll receive a confirmation shortly.</p>
+            <Card className="text-left mb-6">
+              <CardContent className="p-6 space-y-4">
+                {selectedDoctor && (
+                  <div className="flex items-center gap-3">
+                    <img src={selectedDoctor.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedDoctor.name)}&background=2563EB&color=fff`}
+                      alt={selectedDoctor.name} className="w-12 h-12 rounded-full object-cover" />
+                    <div>
+                      <p className="font-semibold">{selectedDoctor.name}</p>
+                      <p className="text-sm text-muted-foreground">{selectedDoctor.specialization}</p>
+                    </div>
+                  </div>
+                )}
+                {[['Patient', form.name], ['Location', selectedLocation ? `${selectedLocation.name}, ${selectedLocation.city}` : '—'], ['Date', form.date], ['Time', form.time], ['Department', form.department]].map(([label, val]) => (
+                  <div key={label} className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">{label}</span>
+                    <span className="font-medium">{val}</span>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+            <Button onClick={() => { setConfirmed(false); setStep(0); setForm(p => ({ ...p, locationId: '', department: '', doctorId: '', date: '', time: '', symptoms: '' })); }} className="w-full">
+              Book Another Appointment
+            </Button>
+          </motion.div>
+        </div>
+      </AppLayout>
+    );
+  }
+
+  return (
+    <AppLayout title="Book Appointment">
+      <div className="max-w-2xl mx-auto">
+        {/* Step Progress */}
+        <div className="flex items-center mb-8 overflow-x-auto pb-2">
+          {STEPS.map((s, i) => (
+            <React.Fragment key={s}>
+              <div className="flex flex-col items-center shrink-0">
+                <div className={cn('w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold transition-colors',
+                  i < step ? 'bg-primary text-primary-foreground' : i === step ? 'bg-primary text-primary-foreground ring-4 ring-primary/20' : 'bg-muted text-muted-foreground')}>
+                  {i < step ? <Check className="w-4 h-4" /> : i + 1}
+                </div>
+                <span className={cn('text-xs mt-1 whitespace-nowrap', i === step ? 'text-primary font-medium' : 'text-muted-foreground')}>{s}</span>
+              </div>
+              {i < STEPS.length - 1 && <div className={cn('flex-1 h-0.5 mx-2 mt-[-12px]', i < step ? 'bg-primary' : 'bg-muted')} />}
+            </React.Fragment>
+          ))}
+        </div>
+
+        <Card>
+          <CardContent className="p-6">
+            <AnimatePresence mode="wait">
+              <motion.div key={step} initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.25 }}>
+                {/* Step 0 — Patient Info */}
+                {step === 0 && (
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 mb-4"><User className="w-5 h-5 text-primary" /><h3 className="font-semibold">Patient Information</h3></div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="col-span-2 space-y-1.5">
+                        <Label>Full Name</Label>
+                        <Input value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label>Age</Label>
+                        <Input type="number" value={form.age} onChange={e => setForm(p => ({ ...p, age: e.target.value }))} />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label>Mobile Number</Label>
+                        <Input value={form.mobile} onChange={e => setForm(p => ({ ...p, mobile: e.target.value }))} />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Gender</Label>
+                      <RadioGroup value={form.gender} onValueChange={v => setForm(p => ({ ...p, gender: v }))} className="flex gap-4">
+                        {['male', 'female', 'other'].map(g => (
+                          <div key={g} className="flex items-center gap-2">
+                            <RadioGroupItem value={g} id={g} />
+                            <Label htmlFor={g} className="font-normal capitalize cursor-pointer">{g}</Label>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 1 — Location */}
+                {step === 1 && (
+                  <div>
+                    <div className="flex items-center gap-2 mb-4"><MapPin className="w-5 h-5 text-primary" /><h3 className="font-semibold">Select Location</h3></div>
+                    <LocationPicker value={form.locationId} onChange={id => setForm(p => ({ ...p, locationId: id }))} />
+                  </div>
+                )}
+
+                {/* Step 2 — Department */}
+                {step === 2 && (
+                  <div>
+                    <div className="flex items-center gap-2 mb-4"><Stethoscope className="w-5 h-5 text-primary" /><h3 className="font-semibold">Select Department</h3></div>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {DEPARTMENTS.map(dept => (
+                        <button key={dept} onClick={() => setForm(p => ({ ...p, department: dept, doctorId: '' }))}
+                          className={cn('p-3 rounded-xl border text-sm font-medium text-left transition-all',
+                            form.department === dept ? 'border-primary bg-primary/10 text-primary' : 'border-border hover:border-primary/40')}>
+                          {dept}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 3 — Doctor */}
+                {step === 3 && (
+                  <div>
+                    <div className="flex items-center gap-2 mb-4"><Stethoscope className="w-5 h-5 text-primary" /><h3 className="font-semibold">Select Doctor</h3></div>
+                    {/* Pay-at-hospital notice */}
+                    <div className="flex items-start gap-2 mb-3 px-3 py-2.5 rounded-xl border border-border bg-muted/40">
+                      <Building2 className="w-3.5 h-3.5 text-muted-foreground mt-0.5 shrink-0" />
+                      <p className="text-xs text-muted-foreground">
+                        <span className="font-medium text-foreground">OP consultation fee is paid at the hospital.</span>
+                        {' '}No payment is collected on this website.
+                      </p>
+                    </div>
+                    <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
+                      {loadingDoctors ? (
+                        <p className="text-sm text-muted-foreground text-center py-4">Loading doctors...</p>
+                      ) : doctors.length === 0 ? (
+                        <p className="text-sm text-muted-foreground text-center py-4">No doctors available for this department.</p>
+                      ) : doctors.map(doc => (
+                        <button key={doc.id} onClick={() => setForm(p => ({ ...p, doctorId: doc.id }))}
+                          className={cn('w-full flex items-center gap-3 p-3 rounded-xl border text-left transition-all',
+                            form.doctorId === doc.id ? 'border-primary bg-primary/10' : 'border-border hover:border-primary/40')}>
+                          <img src={doc.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(doc.name)}&background=2563EB&color=fff`}
+                            alt={doc.name} className="w-10 h-10 rounded-full object-cover shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold truncate">{doc.name}</p>
+                            <p className="text-xs text-muted-foreground truncate">{doc.specialization}</p>
+                            <div className="flex items-center gap-1 mt-0.5">
+                              <IndianRupee className="w-3 h-3 text-primary" />
+                              <span className="text-xs font-medium text-primary">{formatINR(doc.fee)}</span>
+                              <span className="text-[10px] text-muted-foreground">OP fee · pay at hospital</span>
+                            </div>
+                          </div>
+                          <span className={cn('text-xs px-2 py-0.5 rounded-full shrink-0',
+                            doc.availability === 'available' ? 'bg-green-500/10 text-green-600' : 'bg-muted text-muted-foreground')}>
+                            {doc.availability}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 4 — Date & Time */}
+                {step === 4 && (
+                  <div className="space-y-5">
+                    <div className="flex items-center gap-2 mb-1"><Calendar className="w-5 h-5 text-primary" /><h3 className="font-semibold">Date & Time</h3></div>
+                    <div className="space-y-1.5">
+                      <Label>Select Date</Label>
+                      <Input type="date" value={form.date} min={new Date().toISOString().split('T')[0]}
+                        onChange={e => setForm(p => ({ ...p, date: e.target.value }))} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Available Time Slots</Label>
+                      <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
+                        {timeSlots.map(slot => (
+                          <button key={slot} onClick={() => setForm(p => ({ ...p, time: slot }))}
+                            className={cn('py-2 px-3 rounded-lg border text-xs font-medium transition-all',
+                              form.time === slot ? 'border-primary bg-primary/10 text-primary' : 'border-border hover:border-primary/40')}>
+                            {slot}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 5 — Symptoms */}
+                {step === 5 && (
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 mb-1"><FileText className="w-5 h-5 text-primary" /><h3 className="font-semibold">Describe Symptoms</h3></div>
+                    <div className="space-y-1.5">
+                      <Label>Symptoms / Reason for Visit</Label>
+                      <Textarea placeholder="Describe your symptoms, concerns, or reason for this appointment..." rows={6}
+                        value={form.symptoms} onChange={e => setForm(p => ({ ...p, symptoms: e.target.value }))} />
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 6 — Confirm */}
+                {step === 6 && (
+                  <div>
+                    <div className="flex items-center gap-2 mb-4"><Clock className="w-5 h-5 text-primary" /><h3 className="font-semibold">Review & Confirm</h3></div>
+                    {selectedDoctor && (
+                      <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-xl mb-4">
+                        <img src={selectedDoctor.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedDoctor.name)}&background=2563EB&color=fff`}
+                          alt={selectedDoctor.name} className="w-12 h-12 rounded-full object-cover" />
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold">{selectedDoctor.name}</p>
+                          <p className="text-sm text-muted-foreground">{selectedDoctor.specialization}</p>
+                        </div>
+                      </div>
+                    )}
+                    <div className="space-y-3">
+                      {[['Patient Name', form.name], ['Age', form.age], ['Gender', form.gender], ['Mobile', form.mobile],
+                        ['Location', selectedLocation ? `${selectedLocation.name}, ${selectedLocation.city}` : '—'],
+                        ['Department', form.department], ['Date', form.date], ['Time', form.time], ['Symptoms', form.symptoms || 'Not specified']
+                      ].map(([label, val]) => (
+                        <div key={label} className="flex justify-between text-sm py-2 border-b border-border last:border-0">
+                          <span className="text-muted-foreground">{label}</span>
+                          <span className="font-medium max-w-48 text-right">{val}</span>
+                        </div>
+                      ))}
+                      {selectedDoctor && (
+                        <div className="flex justify-between text-sm py-2 border-b border-border">
+                          <span className="text-muted-foreground">OP Consultation Fee</span>
+                          <span className="font-semibold text-primary">{formatINR(selectedDoctor.fee)}</span>
+                        </div>
+                      )}
+                    </div>
+                    {/* Pay-at-hospital notice on confirm */}
+                    <div className="flex items-start gap-2 mt-4 px-3 py-3 rounded-xl border border-border bg-muted/40">
+                      <Building2 className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        <span className="font-medium text-foreground">Payment is collected only at the hospital.</span>
+                        {' '}Please pay the OP fee of{' '}
+                        <span className="font-semibold text-foreground">{selectedDoctor ? formatINR(selectedDoctor.fee) : '—'}</span>
+                        {' '}at the hospital billing counter on the day of your visit.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            </AnimatePresence>
+
+            <div className="flex justify-between mt-8 pt-4 border-t border-border">
+              <Button variant="outline" onClick={() => setStep(s => Math.max(0, s - 1))} disabled={step === 0}>Back</Button>
+              {step < STEPS.length - 1 ? (
+                <Button onClick={() => setStep(s => s + 1)} disabled={!canProceed()}>Continue <ChevronRight className="w-4 h-4 ml-1" /></Button>
+              ) : (
+                <Button onClick={handleSubmit} disabled={submitting}>
+                  {submitting ? 'Booking...' : <><Check className="w-4 h-4 mr-1" />Confirm Booking</>}
+                </Button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </AppLayout>
+  );
+};
+
+export default AppointmentBooking;
+```
+
